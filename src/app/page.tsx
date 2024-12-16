@@ -1,101 +1,69 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+import { useState, useEffect } from "react";
+import { fetchTodos, updateTodo } from "../services/api";
+import TodoList from "@/components/TodoList";
+import { Todo } from "../types";
+import { sortTodos } from "../utils/sortTodos";
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+const Home = () => {
+  const [todos, setTodos] = useState<Todo[]>([]); // State to store the list of todos
+  const [isLoading, setIsLoading] = useState(true); // State to track loading
+
+  // FETCH - Get todos when the component mounts
+  useEffect(() => {
+    const loadTodos = async () => {
+      try {
+        setIsLoading(true); // Set loading state to true before fetching data
+        const data = await fetchTodos(); // Fetch the list of todos from the API
+        setTodos(sortTodos(data)); // Sort and store the todos in state
+      } catch (error) {
+        console.error("Failed to fetch todos:", error); // Handle any errors during the fetch
+      } finally {
+        setIsLoading(false); // Ensure loading state is reset after fetch attempt
+      }
+    };
+
+    loadTodos(); // Call the loadTodos function
+  }, []); // Empty dependency array ensures this effect runs only once on mount
+
+
+  // FUNCTION handle the toggle complete action
+  const handleToggleComplete = async (id: string, isComplete: boolean) => {
+    try {
+      await updateTodo(id, { isComplete }); // Update the todo's status on the server
+      setTodos((prevTodos) =>
+        sortTodos(
+          prevTodos.map((todo) =>
+            todo.id === id ? { ...todo, isComplete } : todo // Update the state with the modified todo
+          )
+        )
+      );
+    } catch (error) {
+      console.error("Failed to update todo:", error); // Handle errors during the update
+    }
+  };
+
+  // Render the TodoList component - if isLoading is true, show the loading animation
+  if (isLoading) {
+    return (
+      <div className="loading-animation-container">
+        <div className="loading-wrapper">
+          <div className="loading-animation"></div>
+          <p className="loading-text">Loading...</p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+    );
+  }  
+
+  return (
+    <div>
+      <div className="todo-app-title-container">
+      <h1 className="todo-app-title">📝 Todo App</h1>
+      </div>
+      <TodoList todos={todos} onToggleComplete={handleToggleComplete} />
     </div>
   );
-}
+};
+
+export default Home;

@@ -19,3 +19,52 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.loading-animation-container {
+  @apply flex items-center justify-center h-screen bg-gray-100;
+}
+.loading-wrapper {
+  @apply flex flex-col items-center justify-center;
+}
+.loading-text {
+  @apply mt-4 text-gray-700 text-sm font-medium;
+}
+
+.loading-animation {
+  @apply animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-blue-500;
+}
+
+/* Custom classes using Tailwind utilities */
+.todo-list-container {
+  @apply max-w-3xl py-8 px-4;
+  margin: 0 auto;
+}
+.todo-item {
+  @apply flex items-center justify-between gap-4 p-4 mb-2 border rounded-none shadow-sm animate-slideUp;
+}
+.todo-item .description {
+  @apply flex-auto text-gray-700 p-1;
+}
+.todo-item .date {
+  @apply text-gray-700 border-solid border border-gray-700 p-1;
+}
+.todo-item.status-overdue {
+  @apply bg-red-300 border-red-300 rounded-none;
+}
+.todo-item.status-complete {
+  @apply bg-green-300 text-green-600 rounded-none;
+}
+.todo-item.status-default {
+  @apply bg-white border-gray-200 rounded-none;
+}
+.todo-item.date-overdue {
+  @apply text-gray-700 border-solid border border-gray-700 p-1;
+}
+
+.todo-app-title {
+  @apply max-w-3xl p-4 text-lg font-semibold w-full text-white;
+  margin: 0 auto;
+}
+.todo-app-title-container {
+  @apply bg-indigo-900 flex items-center justify-start;
+}

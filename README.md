@@ -2,16 +2,20 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+Once you have cloned the repo, run the following:
+```bash
+npm install
+
+```
+Next, you will need to create a .env.local file with the following:
+- NEXT_PUBLIC_API_BASE_URL=YOUR-API-BASE
+- NEXT_PUBLIC_API_KEY=YOUR-API-KEY
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
