@@ -61,6 +61,14 @@ body {
   @apply text-gray-700 border-solid border border-gray-700 p-1;
 }
 
+.todo-item .update-container{
+  @apply ml-4 flex items-center;
+}
+
+.todo-item .update-animation {
+  @apply animate-spin mr-2;
+}
+
 .todo-app-title {
   @apply max-w-3xl p-4 text-lg font-semibold w-full text-white;
   margin: 0 auto;

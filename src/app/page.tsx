@@ -29,20 +29,20 @@ const Home = () => {
 
 
   // FUNCTION handle the toggle complete action
-  const handleToggleComplete = async (id: string, isComplete: boolean) => {
-    try {
-      await updateTodo(id, { isComplete }); // Update the todo's status on the server
-      setTodos((prevTodos) =>
-        sortTodos(
-          prevTodos.map((todo) =>
-            todo.id === id ? { ...todo, isComplete } : todo // Update the state with the modified todo
-          )
-        )
-      );
-    } catch (error) {
-      console.error("Failed to update todo:", error); // Handle errors during the update
-    }
-  };
+const handleToggleComplete = async (id: string, isComplete: boolean, setLoading: (loading: boolean) => void) => {
+  try {
+    await updateTodo(id, { isComplete }); // Update the todo's status on the server
+    setTodos((prevTodos) =>
+      sortTodos(
+        prevTodos.map((todo) => (todo.id === id ? { ...todo, isComplete } : todo))
+      )
+    );
+  } catch (error) {
+    console.error("Failed to update todo:", error);
+  } finally {
+    setLoading(false); // Hide the loading animation
+  }
+};
 
   // Render the TodoList component - if isLoading is true, show the loading animation
   if (isLoading) {
@@ -67,3 +67,4 @@ const Home = () => {
 };
 
 export default Home;
+

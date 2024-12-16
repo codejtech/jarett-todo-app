@@ -4,7 +4,7 @@ import { Todo } from "../types";
 
 interface Props {
   todos: Todo[];
-  onToggleComplete: (id: string, isComplete: boolean) => void;
+  onToggleComplete: (id: string, isComplete: boolean, setLoading: (loading: boolean) => void) => void;
 }
 
 const TodoList: React.FC<Props> = ({ todos, onToggleComplete }) => {
